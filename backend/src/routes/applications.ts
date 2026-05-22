@@ -88,15 +88,17 @@ router.post("/", async (req: Request, res: Response) => {
 
 router.put("/:id", async (req: Request, res: Response) => {
   const { id } = req.params;
-  console.log("type of id , : ", typeof id);
+  alert(`type of id , : ${typeof id}`);
   const { company, role, status, priority, notes } = req.body;
-  console.log(" company ~ notes : ", {
-    company,
-    role,
-    status,
-    priority,
-    notes,
-  });
+  alert(
+    ` Details :  ${{
+      company,
+      role,
+      status,
+      priority,
+      notes,
+    }}`,
+  );
   if (status && !VALID_STATUSES.includes(status)) {
     res
       .status(400)
