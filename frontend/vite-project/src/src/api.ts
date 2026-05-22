@@ -1,5 +1,5 @@
 const BASE_URL =
-  "https://job-application-tracker-wiqx.onrender.com/api/v1/applications/";
+  "https://job-application-tracker-wiqx.onrender.com/api/v1/applications";
 
 export type ApplicationStatus =
   | "applied"
