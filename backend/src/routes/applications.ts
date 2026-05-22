@@ -87,18 +87,13 @@ router.post("/", async (req: Request, res: Response) => {
 });
 
 router.put("/:id", async (req: Request, res: Response) => {
+  console.log("Request to update route ");
+  console.log("Request Params : ", req.params);
+  console.log("body : ", req.body);
   const { id } = req.params;
-  alert(`type of id , : ${typeof id}`);
+
   const { company, role, status, priority, notes } = req.body;
-  alert(
-    ` Details :  ${{
-      company,
-      role,
-      status,
-      priority,
-      notes,
-    }}`,
-  );
+
   if (status && !VALID_STATUSES.includes(status)) {
     res
       .status(400)
