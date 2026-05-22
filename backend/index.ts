@@ -17,6 +17,10 @@ app.use((req, res, next) => {
 
 app.use("/api/v1/applications", applicationsRouter);
 
+app.get("/", (req, res) => {
+  res.json({ message: "API is alive" });
+});
+
 app.listen(PORT, () => {
   console.log(`listening on port : ${PORT}`);
 });
