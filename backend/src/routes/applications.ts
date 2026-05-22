@@ -11,11 +11,10 @@ const VALID_STATUSES = [
   "rejected",
   "ghosted",
 ];
+
 const VALID_PRIORITIES = ["low", "medium", "high"];
 
 router.get("/", async (req: Request, res: Response) => {
-  console.log("GET REQ : DELETE ME LATER");
-
   try {
     const applications = await prisma.application.findMany({
       orderBy: { appliedAt: "desc" },

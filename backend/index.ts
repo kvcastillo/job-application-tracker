@@ -3,7 +3,7 @@ import cors from "cors";
 import applicationsRouter from "./src/routes/applications.js";
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
 app.use(cors());
@@ -16,7 +16,6 @@ app.use((req, res, next) => {
 });
 
 app.use("/api/v1/applications", applicationsRouter);
-console.log("Router registered:", applicationsRouter);
 
 app.listen(PORT, () => {
   console.log(`listening on port : ${PORT}`);
