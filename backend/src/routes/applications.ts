@@ -74,6 +74,7 @@ router.post("/", async (req: Request, res: Response) => {
         notes,
       },
     });
+
     res.status(201).json({
       message: `Application to ${application.company} added`,
       data: application,
