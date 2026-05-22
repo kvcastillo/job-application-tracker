@@ -15,6 +15,8 @@ const VALID_STATUSES = [
 const VALID_PRIORITIES = ["low", "medium", "high"];
 
 router.get("/", async (req: Request, res: Response) => {
+  console.log("Prisma : ", prisma);
+  console.log("get route hit.");
   try {
     const applications = await prisma.application.findMany({
       orderBy: { appliedAt: "desc" },
