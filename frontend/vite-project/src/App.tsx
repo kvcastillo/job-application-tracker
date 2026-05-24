@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import {
   getApplications,
   createApplication,
@@ -34,11 +34,20 @@ export default function App() {
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [showAddModal, setShowAddModal] = useState(false);
   const [editTarget, setEditTarget] = useState<Application | null>(null);
+  const [debouncedSearch, setDebouncedSearch] = useState("");
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/immutability
     loadApplications();
   }, []);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearch(search);
+    }, 300);
+
+    return () => clearTimeout(timer);
+  }, [search]);
 
   async function loadApplications() {
     setFetching(true);
@@ -93,13 +102,17 @@ export default function App() {
     }
   }
 
-  const filtered = applications.filter((a) => {
-    const matchesFilter = filter === "all" || a.status === filter;
-    const matchesSearch =
-      a.company.toLowerCase().includes(search.toLowerCase()) ||
-      a.role.toLowerCase().includes(search.toLowerCase());
-    return matchesFilter && matchesSearch;
-  });
+  const filtered = useMemo(
+    () =>
+      applications.filter((a) => {
+        const matchesFilter = filter === "all" || a.status === filter;
+        const matchesSearch =
+          a.company.toLowerCase().includes(debouncedSearch.toLowerCase()) ||
+          a.role.toLowerCase().includes(debouncedSearch.toLowerCase());
+        return matchesFilter && matchesSearch;
+      }),
+    [applications, filter, debouncedSearch],
+  );
 
   return (
     <div className="min-h-screen bg-zinc-950 text-white">
