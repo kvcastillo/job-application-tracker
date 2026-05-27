@@ -7,7 +7,8 @@ export type ApplicationStatus =
   | "interview"
   | "offer"
   | "rejected"
-  | "ghosted";
+  | "ghosted"
+  | "didn't pursue";
 export type ApplicationPriority = "low" | "medium" | "high";
 
 export type Application = {

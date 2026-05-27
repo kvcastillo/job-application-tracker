@@ -20,6 +20,7 @@ const STATUSES: ApplicationStatus[] = [
   "offer",
   "rejected",
   "ghosted",
+  "didn't pursue",
 ];
 const PRIORITIES: ApplicationPriority[] = ["low", "medium", "high"];
 

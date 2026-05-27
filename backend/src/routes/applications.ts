@@ -10,6 +10,7 @@ const VALID_STATUSES = [
   "offer",
   "rejected",
   "ghosted",
+  "didn't pursue",
 ];
 
 const VALID_PRIORITIES = ["low", "medium", "high"];
