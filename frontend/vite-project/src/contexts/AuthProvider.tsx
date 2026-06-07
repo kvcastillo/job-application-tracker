@@ -1,5 +1,5 @@
 /* eslint-disable react-refresh/only-export-components */
-import { createContext, useState, useEffect, ReactNode } from "react";
+import { createContext, useState, useEffect, type ReactNode } from "react";
 
 type User = {
   id: string;
