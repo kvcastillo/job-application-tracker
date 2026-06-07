@@ -27,7 +27,7 @@ export default function Register() {
       return;
     }
 
-    alert("Account created. Please login.");
+    alert("Account created");
     navigate("/login");
   }
 
@@ -40,15 +40,15 @@ export default function Register() {
         <h1 className="text-xl font-bold">Register</h1>
 
         <input
-          className="w-full p-2 bg-zinc-800 rounded"
           placeholder="username"
+          className="w-full p-2 bg-zinc-800 rounded"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
         />
 
         <input
-          className="w-full p-2 bg-zinc-800 rounded"
           placeholder="email"
+          className="w-full p-2 bg-zinc-800 rounded"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
@@ -56,7 +56,6 @@ export default function Register() {
         <input
           type="password"
           className="w-full p-2 bg-zinc-800 rounded"
-          placeholder="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
@@ -69,7 +68,7 @@ export default function Register() {
           className="text-xs text-zinc-400 text-center cursor-pointer"
           onClick={() => navigate("/login")}
         >
-          Already have an account? Login
+          Already have account?
         </p>
       </form>
     </div>

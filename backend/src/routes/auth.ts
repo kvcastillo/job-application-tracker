@@ -38,7 +38,7 @@ router.post("/register", async (req, res) => {
     });
   } catch (err) {
     console.error("REGISTER ERROR:", err);
-    return res.status(500).json({ message: "Failed to register" });
+    return res.status(500).json({ message: "Register failed" });
   }
 });
 
@@ -55,9 +55,9 @@ router.post("/login", async (req, res) => {
       return res.status(400).json({ message: "Invalid credentials" });
     }
 
-    const isValid = await bcrypt.compare(password, user.password);
+    const valid = await bcrypt.compare(password, user.password);
 
-    if (!isValid) {
+    if (!valid) {
       return res.status(400).json({ message: "Invalid credentials" });
     }
 
@@ -67,14 +67,7 @@ router.post("/login", async (req, res) => {
       { expiresIn: "7d" },
     );
 
-    return res.json({
-      token,
-      user: {
-        id: user.id,
-        email: user.email,
-        username: user.username,
-      },
-    });
+    return res.json({ token });
   } catch (err) {
     console.error("LOGIN ERROR:", err);
     return res.status(500).json({ message: "Login failed" });

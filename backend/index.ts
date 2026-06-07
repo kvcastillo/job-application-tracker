@@ -1,27 +1,33 @@
 import express from "express";
-import authRouter from "./src/routes/auth.js";
 import cors from "cors";
+
+import authRouter from "./src/routes/auth.js";
 import applicationsRouter from "./src/routes/applications.js";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+/* ---------------- MIDDLEWARE ---------------- */
+app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+/* ---------------- LOGGING (MOVE UP!) ---------------- */
 app.use((req, res, next) => {
-  const timestamp = new Date().toISOString();
-  console.log(`[${timestamp}] ${req.method}  ${req.url}`);
+  console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
   next();
 });
-app.use(express.json());
-app.use(cors());
-app.use(express.urlencoded({ extended: true }));
-app.use("/api/v1/auth", authRouter);
 
+/* ---------------- ROUTES ---------------- */
+app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/applications", applicationsRouter);
 
+/* ---------------- HEALTH CHECK ---------------- */
 app.get("/", (req, res) => {
-  res.json({ message: "API is alive : ", status: "ok" });
+  res.json({ message: "API alive", status: "ok" });
 });
 
+/* ---------------- START ---------------- */
 app.listen(PORT, () => {
-  console.log(`listening on port : ${PORT}`);
+  console.log(`Server running on port ${PORT}`);
 });
