@@ -3,9 +3,11 @@ import App from "../App";
 import Login from "../pages/Login";
 import Register from "../pages/Register";
 import AuthProvider from "../contexts/AuthProvider";
+import Navbar from "../components/Navbar";
 export default function AppRoutes() {
   return (
     <AuthProvider>
+      <Navbar />
       <Routes>
         <Route path="/" element={<App />} />
         <Route path="/login" element={<Login />} />
