@@ -40,14 +40,14 @@ export default function Register() {
         <h1 className="text-xl font-bold">Register</h1>
 
         <input
-          placeholder="username just write anything"
+          placeholder="username, just write anything"
           className="w-full p-2 bg-zinc-800 rounded"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
         />
 
         <input
-          placeholder="email just write anything"
+          placeholder="email, just write anything"
           className="w-full p-2 bg-zinc-800 rounded"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
