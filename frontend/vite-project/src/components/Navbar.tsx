@@ -1,3 +1,5 @@
+import Logout from "./Logout";
+
 const Navbar = () => {
   const token = localStorage.getItem("token");
   const username = localStorage.getItem("username");
@@ -5,7 +7,12 @@ const Navbar = () => {
     <nav>
       <ul>
         {token ? (
-          <li>Welcome Back, ${username}</li>
+          <>
+            <li>Welcome Back, {username}</li>
+            <li>
+              <Logout />
+            </li>
+          </>
         ) : (
           <li>
             <button>Login</button>
