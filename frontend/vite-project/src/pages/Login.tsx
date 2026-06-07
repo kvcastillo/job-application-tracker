@@ -1,11 +1,14 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../contexts/useAuth";
 
 const BASE_URL =
   "https://job-application-tracker-wiqx.onrender.com/api/v1/auth";
 
 export default function Login() {
   const navigate = useNavigate();
+
+  const { login } = useAuth();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -15,8 +18,13 @@ export default function Login() {
 
     const res = await fetch(`${BASE_URL}/login`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email,
+        password,
+      }),
     });
 
     const data = await res.json();
@@ -26,8 +34,8 @@ export default function Login() {
       return;
     }
 
-    localStorage.setItem("token", data.token);
-    localStorage.setItem("username", data.user.username);
+    login(data.token, data.user);
+
     navigate("/");
   }
 

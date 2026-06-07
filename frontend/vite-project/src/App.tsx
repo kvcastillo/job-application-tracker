@@ -53,19 +53,14 @@ export default function App() {
   /* ---------------- LOAD DATA ---------------- */
   useEffect(() => {
     async function loadApplications() {
-      console.log("🔥 STEP 1: loadApplications triggered");
-
       setFetching(true);
 
       try {
-        console.log("🔥 STEP 1: calling getApplications()");
         const data = await getApplications();
-
-        console.log("🔥 STEP 1: response received:", data);
 
         setApplications(data);
       } catch (e) {
-        console.error("❌ STEP 1 ERROR:", e);
+        console.error("Something went wrong with loading applications:", e);
       } finally {
         setFetching(false);
       }
