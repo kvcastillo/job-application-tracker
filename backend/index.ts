@@ -1,4 +1,5 @@
 import express from "express";
+import authRouter from "./src/routes/auth.js";
 import cors from "cors";
 import applicationsRouter from "./src/routes/applications.js";
 
@@ -8,6 +9,7 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json());
 app.use(cors());
 app.use(express.urlencoded({ extended: true }));
+app.use("/api/v1/auth", authRouter);
 
 app.use((req, res, next) => {
   const timestamp = new Date().toISOString();

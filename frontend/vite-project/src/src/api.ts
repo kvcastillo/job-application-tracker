@@ -1,5 +1,31 @@
-const BASE_URL =
-  "https://job-application-tracker-wiqx.onrender.com/api/v1/applications";
+const BASE_URL = "https://job-application-tracker-wiqx.onrender.com/api/v1";
+
+function getToken() {
+  return localStorage.getItem("token");
+}
+
+async function apiFetch(endpoint: string, options: RequestInit = {}) {
+  const token = getToken();
+
+  const res = await fetch(`${BASE_URL}${endpoint}`, {
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: token ? `Bearer ${token}` : "",
+      ...options.headers,
+    },
+  });
+
+  const json = await res.json().catch(() => ({}));
+
+  if (!res.ok) {
+    throw new Error(json.message || "API request failed");
+  }
+
+  return json;
+}
+
+/* ---------------- TYPES ---------------- */
 
 export type ApplicationStatus =
   | "applied"
@@ -9,6 +35,7 @@ export type ApplicationStatus =
   | "rejected"
   | "ghosted"
   | "didn't pursue";
+
 export type ApplicationPriority = "low" | "medium" | "high";
 
 export type Application = {
@@ -32,23 +59,21 @@ export type CreateApplicationPayload = {
 
 export type UpdateApplicationPayload = Partial<CreateApplicationPayload>;
 
+/* ---------------- API ---------------- */
+
 export async function getApplications(): Promise<Application[]> {
-  const res = await fetch(BASE_URL);
-  if (!res.ok) throw new Error("Failed to fetch applications");
-  const json = await res.json();
+  const json = await apiFetch("/applications");
   return json.data;
 }
 
 export async function createApplication(
   payload: CreateApplicationPayload,
 ): Promise<Application> {
-  const res = await fetch(BASE_URL, {
+  const json = await apiFetch("/applications", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),
   });
-  if (!res.ok) throw new Error("Failed to create application");
-  const json = await res.json();
+
   return json.data;
 }
 
@@ -56,17 +81,16 @@ export async function updateApplication(
   id: string,
   payload: UpdateApplicationPayload,
 ): Promise<Application> {
-  const res = await fetch(`${BASE_URL}/${id}`, {
+  const json = await apiFetch(`/applications/${id}`, {
     method: "PUT",
-    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),
   });
-  if (!res.ok) throw new Error("Failed to update application");
-  const json = await res.json();
+
   return json.data;
 }
 
 export async function deleteApplication(id: string): Promise<void> {
-  const res = await fetch(`${BASE_URL}/${id}`, { method: "DELETE" });
-  if (!res.ok) throw new Error("Failed to delete application");
+  await apiFetch(`/applications/${id}`, {
+    method: "DELETE",
+  });
 }

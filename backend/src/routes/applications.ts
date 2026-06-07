@@ -1,72 +1,35 @@
 import { Router, type Request, type Response } from "express";
 import { prisma } from "../lib/prisma.js";
+import { authMiddleware } from "../middleware/auth.js";
 
 const router = Router();
+router.use(authMiddleware);
 
-const VALID_STATUSES = [
-  "applied",
-  "screening",
-  "interview",
-  "offer",
-  "rejected",
-  "ghosted",
-  "didn't pursue",
-];
+const getUserId = (req: Request) => (req as any).user.userId;
 
-const VALID_PRIORITIES = ["low", "medium", "high"];
-
+/* ---------------- GET ALL  ---------------- */
 router.get("/", async (req: Request, res: Response) => {
-  console.log("Prisma : ", prisma);
-  console.log("get route hit.");
   try {
+    const userId = (req as any).user.userId;
+
     const applications = await prisma.application.findMany({
+      where: { userId },
       orderBy: { appliedAt: "desc" },
     });
-    res.status(200).json({ data: applications });
+
+    return res.status(200).json({ data: applications });
   } catch (e) {
-    console.error("Failed to fetch applications:", e);
-    res.status(500).json({ message: "Failed to fetch applications" });
+    console.error(e);
+    return res.status(500).json({ message: "Failed to fetch applications" });
   }
 });
 
-router.get("/:id", async (req: Request, res: Response) => {
-  const { id } = req.params;
-  try {
-    const application = await prisma.application.findUnique({ where: { id } });
-    if (!application) {
-      res.status(404).json({ message: "Application not found" });
-      return;
-    }
-    res.status(200).json({ data: application });
-  } catch (e) {
-    console.error("Failed to fetch application:", e);
-    res.status(500).json({ message: "Failed to fetch application" });
-  }
-});
-
+/* ---------------- CREATE ---------------- */
 router.post("/", async (req: Request, res: Response) => {
-  const { company, role, status, priority, notes } = req.body;
-
-  if (!company || !role) {
-    res.status(400).json({ message: "Company and role are required" });
-    return;
-  }
-
-  if (status && !VALID_STATUSES.includes(status)) {
-    res
-      .status(400)
-      .json({ message: `Status must be one of: ${VALID_STATUSES.join(", ")}` });
-    return;
-  }
-
-  if (priority && !VALID_PRIORITIES.includes(priority)) {
-    res.status(400).json({
-      message: `Priority must be one of: ${VALID_PRIORITIES.join(", ")}`,
-    });
-    return;
-  }
-
   try {
+    const userId = getUserId(req);
+    const { company, role, status, priority, notes } = req.body;
+
     const application = await prisma.application.create({
       data: {
         company,
@@ -74,83 +37,58 @@ router.post("/", async (req: Request, res: Response) => {
         status: status ?? "applied",
         priority: priority ?? "medium",
         notes,
+        userId,
       },
     });
 
-    res.status(201).json({
-      message: `Application to ${application.company} added`,
-      data: application,
-    });
+    return res.status(201).json({ data: application });
   } catch (e) {
-    console.error("Failed to create application:", e);
-    res.status(500).json({ message: "Failed to create application" });
+    console.error(e);
+    return res.status(500).json({ message: "Failed to create application" });
   }
 });
 
+/* ---------------- UPDATE ---------------- */
 router.put("/:id", async (req: Request, res: Response) => {
-  console.log("Request to update route ");
-  console.log("Request Params : ", req.params);
-  console.log("body : ", req.body);
-  const { id } = req.params;
-
-  const { company, role, status, priority, notes } = req.body;
-
-  if (status && !VALID_STATUSES.includes(status)) {
-    res
-      .status(400)
-      .json({ message: `Status must be one of: ${VALID_STATUSES.join(", ")}` });
-    return;
-  }
-
-  if (priority && !VALID_PRIORITIES.includes(priority)) {
-    res.status(400).json({
-      message: `Priority must be one of: ${VALID_PRIORITIES.join(", ")}`,
-    });
-    return;
-  }
-
   try {
-    const existing = await prisma.application.findUnique({ where: { id } });
-    if (!existing) {
-      res.status(404).json({ message: "Application not found" });
-      return;
+    const userId = getUserId(req);
+    const { id } = req.params;
+    const { company, role, status, priority, notes } = req.body;
+
+    const updated = await prisma.application.updateMany({
+      where: { id, userId },
+      data: { company, role, status, priority, notes },
+    });
+
+    if (updated.count === 0) {
+      return res.status(404).json({ message: "Not found" });
     }
 
-    const updated = await prisma.application.update({
-      where: { id },
-      data: {
-        ...(company && { company }),
-        ...(role && { role }),
-        ...(status && { status }),
-        ...(priority && { priority }),
-        ...(notes !== undefined && { notes }),
-      },
-    });
-
-    res.status(200).json({ message: `Application updated`, data: updated });
+    return res.status(200).json({ message: "Updated" });
   } catch (e) {
-    console.error("Failed to update application:", e);
-    res.status(500).json({ message: "Failed to update application" });
+    console.error(e);
+    return res.status(500).json({ message: "Failed to update" });
   }
 });
 
+/* ---------------- DELETE ---------------- */
 router.delete("/:id", async (req: Request, res: Response) => {
-  const { id } = req.params;
   try {
-    const existing = await prisma.application.findUnique({ where: { id } });
-    if (!existing) {
-      res.status(404).json({ message: "Application not found" });
-      return;
+    const userId = getUserId(req);
+    const { id } = req.params;
+
+    const deleted = await prisma.application.deleteMany({
+      where: { id, userId },
+    });
+
+    if (deleted.count === 0) {
+      return res.status(404).json({ message: "Not found" });
     }
 
-    const deleted = await prisma.application.delete({ where: { id } });
-    res.status(200).json({
-      message: `Deleted application at ${deleted.company}`,
-      data: deleted,
-    });
+    return res.status(200).json({ message: "Deleted" });
   } catch (e) {
-    console.error("Failed to delete application:", e);
-    res.status(500).json({ message: "Failed to delete application" });
+    console.error(e);
+    return res.status(500).json({ message: "Failed to delete" });
   }
 });
 
