@@ -1,9 +1,11 @@
 import { Router } from "express";
 import bcrypt from "bcrypt";
-import { prisma } from "../lib/prisma.js";
 import jwt from "jsonwebtoken";
+import { prisma } from "../lib/prisma.js";
+
 const router = Router();
 
+/* ---------------- REGISTER ---------------- */
 router.post("/register", async (req, res) => {
   const { username, email, password } = req.body;
 
@@ -13,9 +15,7 @@ router.post("/register", async (req, res) => {
     });
 
     if (existingUser) {
-      return res.status(400).json({
-        message: "Email already exists",
-      });
+      return res.status(400).json({ message: "Email already exists" });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -28,7 +28,7 @@ router.post("/register", async (req, res) => {
       },
     });
 
-    res.status(201).json({
+    return res.status(201).json({
       message: "User created",
       user: {
         id: user.id,
@@ -36,16 +36,13 @@ router.post("/register", async (req, res) => {
         email: user.email,
       },
     });
-  } catch (error) {
-    console.error("REGISTER ERROR:", error);
-
-    res.status(500).json({
-      error,
-      message: "Failed to create user",
-    });
+  } catch (err) {
+    console.error("REGISTER ERROR:", err);
+    return res.status(500).json({ message: "Failed to register" });
   }
 });
 
+/* ---------------- LOGIN ---------------- */
 router.post("/login", async (req, res) => {
   const { email, password } = req.body;
 
@@ -64,14 +61,23 @@ router.post("/login", async (req, res) => {
       return res.status(400).json({ message: "Invalid credentials" });
     }
 
-    const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET!, {
-      expiresIn: "7d",
-    });
+    const token = jwt.sign(
+      { userId: user.id },
+      process.env.JWT_SECRET as string,
+      { expiresIn: "7d" },
+    );
 
-    res.json({ token });
-  } catch (e) {
-    console.error(e);
-    res.status(500).json({ message: "Login failed" });
+    return res.json({
+      token,
+      user: {
+        id: user.id,
+        email: user.email,
+        username: user.username,
+      },
+    });
+  } catch (err) {
+    console.error("LOGIN ERROR:", err);
+    return res.status(500).json({ message: "Login failed" });
   }
 });
 
