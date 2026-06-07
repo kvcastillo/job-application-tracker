@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-const BASE_URL = "https://job-application-tracker-wiqx.onrender.com/api/v1";
+const BASE_URL =
+  "https://job-application-tracker-wiqx.onrender.com/api/v1/auth";
 
 export default function Login() {
   const navigate = useNavigate();
