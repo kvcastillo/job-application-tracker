@@ -55,6 +55,7 @@ router.put("/:id", async (req: Request, res: Response) => {
     const { id } = req.params;
     const { company, role, status, priority, notes } = req.body;
 
+    console.log(`id is : ${id}`);
     const updated = await prisma.application.updateMany({
       where: { id, userId },
       data: { company, role, status, priority, notes },
