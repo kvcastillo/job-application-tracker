@@ -95,6 +95,8 @@ export default function App() {
 
     setSubmitting(true);
     try {
+      console.log("editTarget from handleUpdate : ", editTarget);
+      console.log("PAYLOAD : ", payload);
       const updated = await updateApplication(editTarget.id, payload);
       console.log("updated from handleUpdate : ", updated);
       console.log("applications from handleUpdate : ", applications);
