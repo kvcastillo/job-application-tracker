@@ -61,6 +61,7 @@ router.put("/:id", async (req: Request, res: Response) => {
       data: { company, role, status, priority, notes },
     });
 
+    console.log("updated : ", updated, " updated count : ", updated.count);
     if (updated.count === 0) {
       return res.status(404).json({ message: "Not found" });
     }
