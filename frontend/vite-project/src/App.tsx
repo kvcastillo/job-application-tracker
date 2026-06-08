@@ -96,7 +96,8 @@ export default function App() {
     setSubmitting(true);
     try {
       const updated = await updateApplication(editTarget.id, payload);
-
+      console.log("updated from handleUpdate : ", updated);
+      console.log("applications from handleUpdate : ", applications);
       setApplications((prev) =>
         prev.map((a) => (a.id === updated.id ? updated : a)),
       );
