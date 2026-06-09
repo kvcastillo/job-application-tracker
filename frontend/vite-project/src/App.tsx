@@ -137,7 +137,7 @@ export default function App() {
         {/* HEADER */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight">Job Tracker</h1>
+            <h1 className="text-3xl font-bold tracking-tight">HireTrackr.</h1>
             <p className="text-zinc-500 text-sm mt-1">
               Keep tabs on every application.
             </p>
