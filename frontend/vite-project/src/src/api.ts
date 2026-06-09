@@ -85,6 +85,7 @@ export async function updateApplication(
     method: "PUT",
     body: JSON.stringify(payload),
   });
+  console.log("json from updateApplication:", json);
 
   return json.data;
 }
