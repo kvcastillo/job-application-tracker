@@ -66,7 +66,7 @@ router.put("/:id", async (req: Request, res: Response) => {
       return res.status(404).json({ message: "Not found" });
     }
 
-    return res.status(200).json({ message: "Updated" });
+    return res.status(200).json({ message: "Updated", data: updated });
   } catch (e) {
     console.error(e);
     return res.status(500).json({ message: "Failed to update" });
