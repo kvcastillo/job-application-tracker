@@ -51,21 +51,18 @@ router.post("/", async (req: Request, res: Response) => {
 /* ---------------- UPDATE ---------------- */
 router.put("/:id", async (req: Request, res: Response) => {
   try {
-    const userId = getUserId(req);
     const { id } = req.params;
     const { company, role, status, priority, notes } = req.body;
 
     console.log(`id is : ${id}`);
-    const updated = await prisma.application.updateMany({
-      where: { id, userId },
+    const updated = await prisma.application.update({
+      where: { id },
       data: { company, role, status, priority, notes },
     });
 
-    console.log("updated : ", updated, " updated count : ", updated.count);
-    if (updated.count === 0) {
+    if (!updated) {
       return res.status(404).json({ message: "Not found" });
     }
-
     return res.status(200).json({ message: "Updated", data: updated });
   } catch (e) {
     console.error(e);
