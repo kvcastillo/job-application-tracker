@@ -192,7 +192,7 @@ export default function App() {
             No applications found
           </p>
         ) : (
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3  gap-4">
             {filtered.map((app) => (
               <ApplicationCard
                 key={app.id}
